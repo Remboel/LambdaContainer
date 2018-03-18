@@ -1,0 +1,1 @@
+"..\..\..\tools\NuGet.exe" pack LambdaContainer.Core.fsproj -Prop Configuration=Release

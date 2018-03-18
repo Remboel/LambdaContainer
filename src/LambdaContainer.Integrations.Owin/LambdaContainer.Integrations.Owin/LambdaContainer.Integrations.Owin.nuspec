@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>LambdaContainer.Integrations.Owin</id>
+    <version>1.0.0</version>
+    <title>Lambda Container Owin integration</title>
+    <authors>Morten Remboel Jacobsen</authors>
+    <owners>LambdaContainer</owners>
+    <licenseUrl>https://lambdacontainer.codeplex.com/license</licenseUrl>
+    <projectUrl>https://lambdacontainer.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Lambda Container is a lightweight Inversion of Control (IoC) container suitable for small to
+      medium size .Net solutions.
+      This packages provides inegration with Owin.
+    </description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>.Net IOC Dependency Injection Inversion of Control Owin</tags>
+    <dependencies>
+      <dependency id="LambdaContainer" version="1.0.0" />
+      <dependency id="Microsoft.Owin" version="3.0.0" />
+      <dependency id="Owin" version="1.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Readme.txt" target="" />
+  </files>
+</package>

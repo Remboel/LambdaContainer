@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaContainer.Core", "LambdaContainer.Core\LambdaContainer.Core.fsproj", "{0CCA4641-07F5-4A0E-BF97-A4551F2AD2BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{6F94FA9E-B8A9-4828-AFF9-A37B51A24638}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{73FD39F6-BEE4-4328-98F0-626D1A514EEC}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaContainer.Core.Tests", "LambdaContainer.Core.Tests\LambdaContainer.Core.Tests.fsproj", "{2C0F4DD5-C2F9-427F-97C5-473F45627FC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{5091848C-4C99-4154-BD0E-3F82B7F8CCF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{4C4FC912-D6A1-44D1-AF3B-ACD6D7881644}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaContainer.Core.BootTests.Provider1.Tests", "LambdaContainer.Core.Bootloader.Provider1.Tests\LambdaContainer.Core.BootTests.Provider1.Tests.fsproj", "{5975D44E-127B-4865-81C0-98E9FEC0FFF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdaContainer.Core.BootTests.Provider2.Tests", "LambdaContainer.Core.Bootloader.Provider2.Tests\LambdaContainer.Core.BootTests.Provider2.Tests.csproj", "{F82E4B8E-8692-4D09-BEDA-63FBE583533E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{26BB9A2C-DD0C-409A-921D-75E764073E16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1A076038-5EBA-496B-B91F-492BE4552526}"
+	ProjectSection(SolutionItems) = preProject
+		LambdaContainer.Core\CreatePackage.bat = LambdaContainer.Core\CreatePackage.bat
+		LambdaContainer.Core\LambdaContainer.Core.nuspec = LambdaContainer.Core\LambdaContainer.Core.nuspec
+		LambdaContainer.Core\Readme.txt = LambdaContainer.Core\Readme.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{31584586-EF6C-4D3D-9AEC-381BF78EBFAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependencyCycles", "DependencyCycles", "{6806EAE5-1C71-4AB8-933F-33C8ABC7CC83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdaContainer.Core.TestResources.DependencyCycles", "LambdaContainer.Core.TestResources.DependencyCycles\LambdaContainer.Core.TestResources.DependencyCycles.csproj", "{6A0A0E18-56F6-42B9-A9BF-D505569051A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CCA4641-07F5-4A0E-BF97-A4551F2AD2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CCA4641-07F5-4A0E-BF97-A4551F2AD2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CCA4641-07F5-4A0E-BF97-A4551F2AD2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CCA4641-07F5-4A0E-BF97-A4551F2AD2BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C0F4DD5-C2F9-427F-97C5-473F45627FC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C0F4DD5-C2F9-427F-97C5-473F45627FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C0F4DD5-C2F9-427F-97C5-473F45627FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0F4DD5-C2F9-427F-97C5-473F45627FC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5975D44E-127B-4865-81C0-98E9FEC0FFF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5975D44E-127B-4865-81C0-98E9FEC0FFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5975D44E-127B-4865-81C0-98E9FEC0FFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5975D44E-127B-4865-81C0-98E9FEC0FFF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F82E4B8E-8692-4D09-BEDA-63FBE583533E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F82E4B8E-8692-4D09-BEDA-63FBE583533E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F82E4B8E-8692-4D09-BEDA-63FBE583533E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F82E4B8E-8692-4D09-BEDA-63FBE583533E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0A0E18-56F6-42B9-A9BF-D505569051A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0A0E18-56F6-42B9-A9BF-D505569051A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0A0E18-56F6-42B9-A9BF-D505569051A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0A0E18-56F6-42B9-A9BF-D505569051A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0CCA4641-07F5-4A0E-BF97-A4551F2AD2BB} = {31584586-EF6C-4D3D-9AEC-381BF78EBFAF}
+		{2C0F4DD5-C2F9-427F-97C5-473F45627FC7} = {73FD39F6-BEE4-4328-98F0-626D1A514EEC}
+		{5091848C-4C99-4154-BD0E-3F82B7F8CCF7} = {73FD39F6-BEE4-4328-98F0-626D1A514EEC}
+		{4C4FC912-D6A1-44D1-AF3B-ACD6D7881644} = {5091848C-4C99-4154-BD0E-3F82B7F8CCF7}
+		{5975D44E-127B-4865-81C0-98E9FEC0FFF0} = {4C4FC912-D6A1-44D1-AF3B-ACD6D7881644}
+		{F82E4B8E-8692-4D09-BEDA-63FBE583533E} = {4C4FC912-D6A1-44D1-AF3B-ACD6D7881644}
+		{1A076038-5EBA-496B-B91F-492BE4552526} = {26BB9A2C-DD0C-409A-921D-75E764073E16}
+		{31584586-EF6C-4D3D-9AEC-381BF78EBFAF} = {6F94FA9E-B8A9-4828-AFF9-A37B51A24638}
+		{6806EAE5-1C71-4AB8-933F-33C8ABC7CC83} = {5091848C-4C99-4154-BD0E-3F82B7F8CCF7}
+		{6A0A0E18-56F6-42B9-A9BF-D505569051A4} = {6806EAE5-1C71-4AB8-933F-33C8ABC7CC83}
+	EndGlobalSection
+EndGlobal

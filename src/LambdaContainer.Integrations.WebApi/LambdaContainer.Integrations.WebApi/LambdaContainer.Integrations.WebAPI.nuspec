@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>LambdaContainer.Integrations.WebApi</id>
+    <version>1.0.0</version>
+    <title>Lambda Container Web API integration</title>
+    <authors>Morten Remboel Jacobsen</authors>
+    <owners>LambdaContainer</owners>
+    <licenseUrl>https://lambdacontainer.codeplex.com/license</licenseUrl>
+    <projectUrl>https://lambdacontainer.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Lambda Container is a lightweight Inversion of Control (IoC) container suitable for small to
+      medium size .Net solutions.
+      This packages provides a one-line integration with WebApi dependency resolver.
+    </description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>.Net IOC Dependency Injection Inversion of Control WebAPI</tags>
+    <dependencies>
+      <dependency id="LambdaContainer" version="1.0.0" />
+      <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Readme.txt" target="" />
+  </files>
+</package>

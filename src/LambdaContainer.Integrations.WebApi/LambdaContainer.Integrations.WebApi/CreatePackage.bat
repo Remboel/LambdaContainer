@@ -1,0 +1,1 @@
+"..\..\..\tools\NuGet.exe" pack LambdaContainer.Integrations.WebAPI.fsproj -Prop Configuration=Release

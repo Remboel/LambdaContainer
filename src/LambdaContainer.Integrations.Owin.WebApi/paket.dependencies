@@ -1,0 +1,10 @@
+strategy: min
+redirects: on
+source https://www.nuget.org/api/v2/
+nuget Fsharp.Core
+nuget fsunit
+nuget LambdaContainer.Integrations.Owin
+nuget Microsoft.AspNet.WebApi.Owin
+nuget Microsoft.AspNet.WebApi.Client
+nuget NSubstitute
+nuget nunit 2.6.4

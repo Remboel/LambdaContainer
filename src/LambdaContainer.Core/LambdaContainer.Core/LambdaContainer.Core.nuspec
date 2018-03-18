@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>LambdaContainer</id>
+    <version>1.0.0</version>
+    <title>Lambda Container Core Library</title>
+    <authors>Morten Remboel Jacobsen</authors>
+    <owners>LambdaContainer</owners>
+    <licenseUrl>https://lambdacontainer.codeplex.com/license</licenseUrl>
+    <projectUrl>https://lambdacontainer.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Lambda Container is a lightweight Inversion of Control (IoC) container suitable for small to
+      medium size .Net solutions.</description>
+    <releaseNotes>See Readme.txt</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>.Net IOC Dependency Injection Inversion of Control</tags>
+  </metadata>
+  <files>
+    <file src="Readme.txt" target="" />
+  </files>
+</package>

@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuspecs", ".nuspecs", "{CBBB0164-4277-450B-A044-5762336D7236}"
+	ProjectSection(SolutionItems) = preProject
+		LambdaContainer.Integrations.WebApi\CreatePackage.bat = LambdaContainer.Integrations.WebApi\CreatePackage.bat
+		LambdaContainer.Integrations.WebApi\LambdaContainer.Integrations.WebAPI.nuspec = LambdaContainer.Integrations.WebApi\LambdaContainer.Integrations.WebAPI.nuspec
+		LambdaContainer.Integrations.WebApi\Readme.txt = LambdaContainer.Integrations.WebApi\Readme.txt
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaContainer.Integrations.WebApi", "LambdaContainer.Integrations.WebApi\LambdaContainer.Integrations.WebApi.fsproj", "{2514EDB8-712D-40C6-BAAA-1409C2190437}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2514EDB8-712D-40C6-BAAA-1409C2190437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2514EDB8-712D-40C6-BAAA-1409C2190437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2514EDB8-712D-40C6-BAAA-1409C2190437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2514EDB8-712D-40C6-BAAA-1409C2190437}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

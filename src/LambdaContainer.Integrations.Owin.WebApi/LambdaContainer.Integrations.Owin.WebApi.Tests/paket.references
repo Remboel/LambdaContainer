@@ -1,0 +1,7 @@
+LambdaContainer.Integrations.Owin
+Microsoft.AspNet.WebApi.Owin
+nunit
+fsunit
+NSubstitute
+Microsoft.AspNet.WebApi.Client
+Fsharp.Core

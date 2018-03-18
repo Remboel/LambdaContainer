@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaContainer.Integrations.Owin", "LambdaContainer.Integrations.Owin\LambdaContainer.Integrations.Owin.fsproj", "{C77A1439-80A9-4E80-91A5-D26FACEE47DB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuspec", ".nuspec", "{328DC30A-71CA-4F50-B548-0F32DA5494FC}"
+	ProjectSection(SolutionItems) = preProject
+		LambdaContainer.Integrations.Owin\CreatePackage.bat = LambdaContainer.Integrations.Owin\CreatePackage.bat
+		LambdaContainer.Integrations.Owin\LambdaContainer.Integrations.Owin.nuspec = LambdaContainer.Integrations.Owin\LambdaContainer.Integrations.Owin.nuspec
+		LambdaContainer.Integrations.Owin\Readme.txt = LambdaContainer.Integrations.Owin\Readme.txt
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LambdaContainer.Integrations.Owin.Tests", "LambdaContainer.Integrations.Owin.Tests\LambdaContainer.Integrations.Owin.Tests.fsproj", "{9D0FBEE9-9D06-4EA9-9CFB-F9ADF2E409A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C77A1439-80A9-4E80-91A5-D26FACEE47DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C77A1439-80A9-4E80-91A5-D26FACEE47DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C77A1439-80A9-4E80-91A5-D26FACEE47DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C77A1439-80A9-4E80-91A5-D26FACEE47DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D0FBEE9-9D06-4EA9-9CFB-F9ADF2E409A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D0FBEE9-9D06-4EA9-9CFB-F9ADF2E409A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D0FBEE9-9D06-4EA9-9CFB-F9ADF2E409A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D0FBEE9-9D06-4EA9-9CFB-F9ADF2E409A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
