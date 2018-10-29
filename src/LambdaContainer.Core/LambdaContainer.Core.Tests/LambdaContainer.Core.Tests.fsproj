@@ -5,11 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="TestUtilities.fs" />
     <Compile Include="FactoryIdentityTest.fs" />
     <Compile Include="ConcurrentFactoryConfigurationRepositoryBuilder.fs" />
-    <!--<Compile Include="FactoryConfigurationRepositoryTest.fs" />
-    <Compile Include="DynamicTypeResolverTests.fs" />
+    <Compile Include="FactoryConfigurationRepositoryTest.fs" />
+    <!--<Compile Include="DynamicTypeResolverTests.fs" />
     <Compile Include="LambdaContainerTest.fs" />
     <Compile Include="LambdaContainerIntegrationTest.fs" />
     <Compile Include="RegistryDiscoveryTest.fs" />

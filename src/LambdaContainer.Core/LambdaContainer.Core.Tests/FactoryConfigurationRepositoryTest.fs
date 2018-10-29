@@ -3,14 +3,13 @@ open System
 open System.Linq
 open System.Collections.Generic
 open NSubstitute
-open NUnit.Framework
 open LambdaContainer.Core.FactoryContracts
 open LambdaContainer.Core.InstanceFactories
 open LambdaContainer.Core.RepositoryConstruction
 open LambdaContainer.Core.Contracts
 open LambdaContainer.Core.Tests.TestUtilities
 open LambdaContainer.Core.Tests.TestUtilities.Identity
-open FsUnit
+open Xunit
 
 type internal ITestDisposableInstanceFactory =
     inherit IInstanceFactory
@@ -35,15 +34,15 @@ let private createSutWith identToFactMap =
     |> createRepositoryInput 
     |> (fun x -> new FactoryConfigurationRepository(x) :> IFactoryConfigurationRepository)
 
-[<Test>]
+[<Fact>]
 let ``Can Construct``() =
     //Act
     let sut = createSutWith []
 
     //Assert
-    sut.Retrieve typeof<string> None |> should equal None
+    Assert.Equal(None,(sut.Retrieve typeof<string> None))
 
-[<Test>]
+[<Fact>]
 let ``Can Retrieve``() =
     //Arrange
     let factoryConfig = constructFactoryConfig(None)
@@ -53,9 +52,9 @@ let ``Can Retrieve``() =
     let retrievedConfig = sut.Retrieve (factoryConfig.GetIdentity().GetOutputType()) None
 
     //Assert
-    retrievedConfig |> should equal (Some factoryConfig)
+    Assert.Equal(Some factoryConfig, retrievedConfig)
 
-[<Test>]
+[<Fact>]
 let ``Can Retrieve By Name``() =
     //Arrange
     let factoryConfig1 = constructFactoryConfig( Some "1")
@@ -66,9 +65,9 @@ let ``Can Retrieve By Name``() =
     let retrievedConfig = sut.Retrieve (factoryConfig2.GetIdentity().GetOutputType()) (Some "2")
 
     //Assert
-    retrievedConfig |> should equal (Some factoryConfig2)
+    Assert.Equal(Some factoryConfig2, retrievedConfig)
 
-[<Test>]
+[<Fact>]
 let ``Can Retrieve All``() =
     //Arrange
     let factoryConfig1 = constructFactoryConfig( Some "1")
@@ -79,10 +78,10 @@ let ``Can Retrieve All``() =
     let retrievedConfigs = sut.RetrieveAll (factoryConfig2.GetIdentity().GetOutputType())
 
     //Assert
-    retrievedConfigs.IsSome |> should be True
-    retrievedConfigs.Value |> List.ofSeq |> should equal [factoryConfig1; factoryConfig2]
+    Assert.True(retrievedConfigs.IsSome)
+    Assert.Equal<IInstanceFactory list>([factoryConfig1; factoryConfig2], (List.ofSeq retrievedConfigs.Value))
 
-[<Test>]
+[<Fact>]
 let ``Retrieve All For Anonymous Registration Throws``() =
     //Arrange
     let factoryConfig1 = constructFactoryConfig(None)
@@ -92,7 +91,7 @@ let ``Retrieve All For Anonymous Registration Throws``() =
     Assert.Throws<InvalidOperationException>(fun () -> sut.RetrieveAll (factoryConfig1.GetIdentity().GetOutputType()) |> ignore) |> ignore
 
 
-[<Test>]
+[<Fact>]
 let ``Can CreateSubScope``() =
     //Arrange
     let factoryConfig1 = constructFactoryConfig(None)
@@ -102,10 +101,10 @@ let ``Can CreateSubScope``() =
     let clone = sut.CreateSubScope()
 
     //Assert
-    clone |> should not' (be sameAs sut)
-    clone |> should not' (equal null)
+    Assert.NotNull(clone)
+    Assert.NotSame(sut, clone)
 
-[<Test>]
+[<Fact>]
 let ``CreateSubScope Clones Inner Content``() =
     //Arrange
     let factoryConfig1 = mock<IInstanceFactory>()
@@ -124,10 +123,10 @@ let ``CreateSubScope Clones Inner Content``() =
     let cloneConfig1 = clone.Retrieve typeof<string> (Some "1")
     let cloneConfig2 = clone.Retrieve typeof<string> (Some "2")
 
-    cloneConfig1.Value |> should be (sameAs factoryConfig1Clone)
-    cloneConfig2.Value |> should be (sameAs factoryConfig2Clone)
+    Assert.Same(factoryConfig1Clone, cloneConfig1.Value)
+    Assert.Same(factoryConfig2Clone, cloneConfig2.Value)
 
-[<Test>]
+[<Fact>]
 let ``Can Dispose``() =
     //Arrange
     let factoryExpectedToBeDisposed = mock<ITestDisposableInstanceFactory>()
