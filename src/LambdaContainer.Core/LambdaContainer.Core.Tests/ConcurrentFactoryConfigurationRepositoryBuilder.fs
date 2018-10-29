@@ -2,7 +2,6 @@
 open System
 open System.Collections.Generic
 open NSubstitute
-open NUnit.Framework
 open LambdaContainer.Core.Contracts
 open LambdaContainer.Core.FactoryContracts
 open LambdaContainer.Core.DisposalScopes
@@ -10,7 +9,7 @@ open LambdaContainer.Core.RepositoryConstruction
 open LambdaContainer.Core.Tests.TestUtilities
 open LambdaContainer.Core.Tests.TestUtilities.Identity
 open Fasterflect
-open FsUnit
+open Xunit
 
 let private fakeFactory<'a> (value : 'a) =
     (fun (_ : ILambdaContainer) -> value :> Object)
@@ -27,11 +26,11 @@ let private addTo (sut : IFactoryConfigurationRepositoryBuilder) factory =
 let private createSut mode =
     new ConcurrentFactoryConfigurationRepositoryBuilder(mode, None) :> IFactoryConfigurationRepositoryBuilder
 
-[<Test>]
+[<Fact>]
 let ``Can construct``() =
-    (createSut RegistrationCollisionModes.Fail).Build() |> should not' (equal null)
+    Assert.NotNull((createSut RegistrationCollisionModes.Fail).Build())
 
-[<Test>]
+[<Fact>]
 let ``Can Construct With Reference Repository``() =
     //Arrange
     let referenceRepository = mock<IFactoryConfigurationRepository>()
@@ -51,10 +50,10 @@ let ``Can Construct With Reference Repository``() =
     let enrichedMap = sut.Build()
 
     //Assert
-    enrichedMap |> should not' (equal null)
-    Assert.That(enrichedMap.GetRegistrations(), Is.EquivalentTo referenceRegistrations)
+    Assert.NotNull(enrichedMap)
+    Assert.Equal(referenceRegistrations,enrichedMap.GetRegistrations())
 
-[<Test>]
+[<Fact>]
 let ``Can Add``() =
     //Arrange
     let sut = createSut(RegistrationCollisionModes.Fail)
@@ -72,20 +71,22 @@ let private Test_Build_Repository_And_Verify_Result expectedMode =
 
     //Assert
     let constructed = result.Retrieve (simpleId.GetOutputType()) None
-    constructed |> Option.isSome |> should equal true
-    constructed.Value.GetIdentity() |> should equal simpleId
-    constructed.Value.GetType() |> should equal typeof<ApplicationScope>
-    constructed.Value.GetFieldValue("subScopeMode") :?> DisposalScope |> should equal expectedMode
+    
+    Assert.True(constructed.IsSome)
 
-[<Test>]
+    Assert.Equal(simpleId,constructed.Value.GetIdentity())
+    Assert.Equal(typeof<ApplicationScope>,constructed.Value.GetType())
+    Assert.Equal(expectedMode ,constructed.Value.GetFieldValue("subScopeMode"):?> DisposalScope)
+
+[<Fact>]
 let ``Can Add With SubscopeMode Container And Build Repository``() = 
     Test_Build_Repository_And_Verify_Result DisposalScope.Container
 
-[<Test>]
+[<Fact>]
 let ``Can Add With SubscopeMode SubScope Build Repository``() = 
     Test_Build_Repository_And_Verify_Result DisposalScope.SubScope
 
-[<Test>]
+[<Fact>]
 let ``Colliding Registration Throws``() =
     //Arrange
     let sut = createSut(RegistrationCollisionModes.Fail)
@@ -94,7 +95,7 @@ let ``Colliding Registration Throws``() =
     simpleFactory |> addTo sut
     Assert.Throws<OverlappingRegistrationException>(fun () -> simpleFactory |> addTo sut) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Colliding Registration Ignores``() =
     //Arrange
     let sut = createSut(RegistrationCollisionModes.Ignore)
@@ -106,9 +107,9 @@ let ``Colliding Registration Ignores``() =
     //Assert
     let resFunc = sut.Build().Retrieve (simpleId.GetOutputType()) None
     let instance = resFunc.Value.Invoke (mock<ILambdaContainer>())
-    instance |> should equal "1"
+    Assert.Equal("1" :> Object, instance)
 
-[<Test>]
+[<Fact>]
 let ``Colliding Registration Overrrides``() =
     //Arrange
     let sut = createSut(RegistrationCollisionModes.Override)
@@ -120,9 +121,9 @@ let ``Colliding Registration Overrrides``() =
     //Assert
     let resFunc = sut.Build().Retrieve (simpleId.GetOutputType()) None
     let instance = resFunc.Value.Invoke (mock<ILambdaContainer>())
-    instance |> should equal "2"
+    Assert.Equal("2" :> Object, instance)
 
-[<Test>]
+[<Fact>]
 let ``Register Anonymous If Named Exists Throws``() =
     //Arrange
     let sut = createSut(RegistrationCollisionModes.Fail)

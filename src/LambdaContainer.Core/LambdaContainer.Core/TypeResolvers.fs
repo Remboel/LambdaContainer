@@ -70,7 +70,10 @@ type internal DynamicTypeResolver() =
         let blockBody = List<Expression>();
         
         //Helper functions
-        let invokeMethod = TypeExplorer.getMethod<FSharpFunc<Type,Object>, Object> <@ fun x -> x.Invoke(typeof<string>) @>
+        let invokeMethod = 
+            typeof<FSharpFunc<Type,Object>>.GetMethods() 
+            |> Seq.where (fun m -> m.Name = "Invoke")
+            |> Seq.head
 
         let convertToExpr toType rightHandExpression = 
             Expression.Convert(rightHandExpression, toType) :> Expression

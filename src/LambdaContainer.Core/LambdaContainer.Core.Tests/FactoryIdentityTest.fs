@@ -1,9 +1,8 @@
 ﻿module LambdaContainer.Core.Tests.FactoryIdentityTest
-open NUnit.Framework
 open LambdaContainer.Core.FactoryContracts
-open FsUnit
+open Xunit
 
-[<Test>]
+[<Fact>]
 let ``Can Construct Named Identity``() =
     //Arrange
     let name = "the name"
@@ -14,12 +13,12 @@ let ``Can Construct Named Identity``() =
     let sut = new FactoryIdentity(Some(name), thetype, Some(sourceInfo))
 
     //Assert
-    sut.IsAnonymous() |> should equal false
-    sut.GetName() |> should equal name
-    sut.GetOutputType() |> should equal thetype
-    sut.GetRegistrationSourceInformation() |> should equal sourceInfo
+    Assert.False(sut.IsAnonymous())
+    Assert.Equal(name, sut.GetName())
+    Assert.Equal(thetype, sut.GetOutputType())
+    Assert.Equal(sourceInfo, sut.GetRegistrationSourceInformation())
 
-[<Test>]
+[<Fact>]
 let ``Can Construct Anonymous Identity``() =
     //Arrange
     let thetype = typeof<string>
@@ -29,9 +28,9 @@ let ``Can Construct Anonymous Identity``() =
     let sut = new FactoryIdentity(None, thetype, Some sourceInfo)
 
     //Assert
-    sut.IsAnonymous() |> should equal true
+    Assert.True(sut.IsAnonymous())
 
-[<Test>]
+[<Fact>]
 let ``Two Identities Are Equal When Type And Name Equals``() =
     //Arrange
     let type1 = typeof<string>
@@ -49,5 +48,5 @@ let ``Two Identities Are Equal When Type And Name Equals``() =
     let areNotEqualDueToDifferentName = candidate1.Equals(candidate4)
 
     //Assert
-    areEqual |> should equal true
-    [areNotEqualDueToDifferentType; areNotEqualDueToDifferentName] |> should equal [false;false]
+    Assert.True(areEqual)
+    Assert.Equal((false,false),(areNotEqualDueToDifferentType, areNotEqualDueToDifferentName))

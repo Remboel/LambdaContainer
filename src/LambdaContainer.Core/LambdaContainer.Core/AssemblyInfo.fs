@@ -9,7 +9,7 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("LambdaContainer")>]
 [<assembly: AssemblyProduct("LambdaContainer.Core")>]
-[<assembly: AssemblyCopyright("Copyright ? LambdaContainer 2017")>]
+[<assembly: AssemblyCopyright("Copyright ? LambdaContainer 2018")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: InternalsVisibleTo("LambdaContainer.Core.Tests")>]
 [<assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")>]
