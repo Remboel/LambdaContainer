@@ -2,17 +2,16 @@
 open System
 open NSubstitute
 open LambdaContainer.Core.Contracts
-open NUnit.Framework
 open LambdaContainer.Core.FactoryContracts
 open LambdaContainer.Core.DisposalScopes
 open LambdaContainer.Core.Tests.TestUtilities
-open FsUnit
+open Xunit
     
-[<Test>]
+[<Fact>]
 let ``Can Construct``() =
-    Assert.DoesNotThrow(fun () -> new SharedScope(mock<IInstanceFactory>()) |> ignore)
+    Assert.NotNull(new SharedScope(mock<IInstanceFactory>()))
 
-[<Test>]
+[<Fact>]
 let ``CreateSubScope Returns Self``() =
     //Arrange
     let factory = mock<IInstanceFactory>()
@@ -23,11 +22,11 @@ let ``CreateSubScope Returns Self``() =
     let clone = sut.CreateSubScope()
 
     //Assert
-    clone |> should be (sameAs sut)
+    Assert.Same(sut, clone)
     clone.Invoke container |> ignore
     factory.Received().Invoke(container) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Can Dispose Does Not Dispose Shared Factory``() =
     //Arrange
     let factory = mock<ITestDisposableInstanceFactory>()
