@@ -15,8 +15,8 @@
     <Compile Include="LambdaContainerIntegrationTest.fs" />
     <Compile Include="RegistryDiscoveryTest.fs" />
     <Compile Include="InstanceFactoriesTest.fs" />
-    <!--<Compile Include="ApplicationScopeTest.fs" />
-    <Compile Include="SubScopeTest.fs" />
+    <Compile Include="ApplicationScopeTest.fs" />
+    <!--<Compile Include="SubScopeTest.fs" />
     <Compile Include="SharedScopeTest.fs" />
     <Compile Include="StackSetTest.fs" />
     <Compile Include="BuildPlannerTest.fs" />

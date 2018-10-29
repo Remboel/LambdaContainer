@@ -2,19 +2,18 @@
 open System
 open NSubstitute
 open LambdaContainer.Core.Contracts
-open NUnit.Framework
 open LambdaContainer.Core.FactoryContracts
 open LambdaContainer.Core.DisposalScopes
 open LambdaContainer.Core.Tests.TestUtilities
-open FsUnit
+open Xunit
 
 let container = mock<ILambdaContainer>()
 
-[<Test>]
+[<Fact>]
 let ``Can Construct``() =
-    Assert.DoesNotThrow(fun () -> new ApplicationScope(mock<IInstanceFactory>(), DisposalScope.Container) |> ignore)
+    Assert.NotNull(new ApplicationScope(mock<IInstanceFactory>(), DisposalScope.Container))
 
-[<Test>]
+[<Fact>]
 let ``CreateSubScope With Shared Scope``() =
     //Arrange
     let factory = mock<IInstanceFactory>()
@@ -24,12 +23,12 @@ let ``CreateSubScope With Shared Scope``() =
     let clone = sut.CreateSubScope()
 
     //Assert
-    clone |> should not' (be Null)
-    clone.GetType() |> should equal typeof<SharedScope>
+    Assert.NotNull(clone)
+    Assert.Equal(typeof<SharedScope>,clone.GetType())
     [sut ; clone] |> List.iter(fun x -> x.Invoke container |> ignore)
     factory.Received(2).Invoke(container) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``CreateSubScope With SubScope``() =
     //Arrange
     let factory = mock<IInstanceFactory>()
@@ -42,13 +41,13 @@ let ``CreateSubScope With SubScope``() =
     let clone = sut.CreateSubScope()
 
     //Assert
-    clone |> should not' (be sameAs sut)
-    clone.GetType() |> should equal typeof<SubScope>
+    Assert.NotSame(sut,clone)
+    Assert.Equal(typeof<SubScope>, clone.GetType())
     [sut ; clone] |> List.iter(fun x -> x.Invoke container |> ignore)
     factory.Received().Invoke(container) |> ignore
     factoryClone.Received().Invoke(container) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Can Dispose``() =
     //Arrange
     let factory = mock<ITestDisposableInstanceFactory>()
