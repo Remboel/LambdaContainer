@@ -1,11 +1,10 @@
 ﻿module LambdaContainer.Core.Tests.RegistrationsTest
 open System
 open NSubstitute
-open NUnit.Framework
 open LambdaContainer.Core.RepositoryConstruction
 open LambdaContainer.Core.Contracts
 open LambdaContainer.Core.Tests.TestUtilities
-open FsUnit
+open Xunit
 
 type RegistrationArguments = { f:ILambdaContainer -> Object ; t:Type ; n : string option }
 
@@ -16,16 +15,16 @@ let injector factory t n =
     receivedArgs <- Some({f = factory; t = t ; n = n})
 
 let assertHasRegistered () = 
-    receivedArgs |> Option.isSome |> should be True
+    Assert.True(receivedArgs.IsSome)
 
 let assertRegisteredType t = 
-    receivedArgs.Value.t |> should equal t
+    Assert.Equal(t, receivedArgs.Value.t)
 
 let assertRegisteredName n = 
-    receivedArgs.Value.n |> should equal n
+    Assert.Equal(n, receivedArgs.Value.n)
 
 let assertRegisteredFactoryOutput r = 
-    receivedArgs.Value.f(lcMock) |> should equal r
+    Assert.Equal(r, receivedArgs.Value.f(lcMock))
 
 let assertTypeRegistration<'a when 'a: not struct> ()= 
     let r = mock<'a>()
@@ -37,18 +36,19 @@ let assertRegistrationPerformed<'a> name =
     assertRegisteredType typeof<'a>
     assertRegisteredName name
 
-[<SetUp>]
-let Setup() =
+let setup() =
     receivedArgs <- None
     lcMock <- mock<ILambdaContainer>()
 
-[<Test>]
+[<Fact>]
 let ``Can Construct A FactoryRegistrations``() =
-    Assert.DoesNotThrow(fun () ->new FactoryRegistrations(injector) |> ignore)
+    setup()
+    Assert.NotNull(new FactoryRegistrations(injector))
 
-[<Test>]
+[<Fact>]
 let ``FactoryRegistrations Can Register``() =
     //Arrange
+    setup()
     let sut = FactoryRegistrations(injector) :> IFactoryRegistrations
     let factoryOutput = mock<ITestType>()
 
@@ -59,9 +59,10 @@ let ``FactoryRegistrations Can Register``() =
     assertRegistrationPerformed<ITestType> None
     assertRegisteredFactoryOutput factoryOutput
 
-[<Test>]
+[<Fact>]
 let ``FactoryRegistrations Can Register By Name``() =
     //Arrange
+    setup()
     let sut = FactoryRegistrations(injector) :> IFactoryRegistrations
     let factoryOutput = mock<ITestType>()
     let name = "a name"
@@ -73,13 +74,15 @@ let ``FactoryRegistrations Can Register By Name``() =
     assertRegistrationPerformed<ITestType> (Some name)
     assertRegisteredFactoryOutput factoryOutput
 
-[<Test>]
+[<Fact>]
 let ``Can Construct A TypeMappingRegistrations``() =
-    Assert.DoesNotThrow(fun () ->new TypeMappingRegistrations(injector) |> ignore)
+    setup()
+    Assert.NotNull(new TypeMappingRegistrations(injector))
 
-[<Test>]
+[<Fact>]
 let ``TypeMappingRegistrations Can Register``() =
     //Arrange
+    setup()
     let sut = TypeMappingRegistrations(injector) :> ITypeMappingRegistrations
 
     //Act
@@ -89,9 +92,10 @@ let ``TypeMappingRegistrations Can Register``() =
     assertRegistrationPerformed<ITestType> None
     assertTypeRegistration<TestTypeImpl>()
 
-[<Test>]
+[<Fact>]
 let ``TypeMappingRegistrations Can Register By Name``() =
     //Arrange
+    setup()
     let sut = TypeMappingRegistrations(injector) :> ITypeMappingRegistrations
     let name = Guid.NewGuid().ToString()
 
@@ -102,48 +106,54 @@ let ``TypeMappingRegistrations Can Register By Name``() =
     assertRegistrationPerformed<ITestType> (Some name)
     assertTypeRegistration<TestTypeImpl>()
 
-[<Test>]
+[<Fact>]
 let ``TypeMappingRegistrations Can Not Register T to T``() =
     //Arrange
+    setup()
     let sut = TypeMappingRegistrations(injector) :> ITypeMappingRegistrations
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.Register<TestTypeImpl, TestTypeImpl>() |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``TypeMappingRegistrations Can Not Register T to T By Name``() =
     //Arrange
+    setup()
     let sut = TypeMappingRegistrations(injector) :> ITypeMappingRegistrations
     let name = Guid.NewGuid().ToString()
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.RegisterByName<TestTypeImpl, TestTypeImpl>(name) |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``TypeMappingRegistrations Can Not Register T1 to T2 If T2 Is Not Implementation Of T1``() =
     //Arrange
+    setup()
     let sut = TypeMappingRegistrations(injector) :> ITypeMappingRegistrations
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.Register<ITestType, TestClosedType>() |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``TypeMappingRegistrations Can Not Register T1 to T2 By Name If T2 Is Not Implementation Of T1``() =
     //Arrange
+    setup()
     let sut = TypeMappingRegistrations(injector) :> ITypeMappingRegistrations
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.RegisterByName<ITestType, TestClosedType>("a name") |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Can Construct A CoreRegistrations``() =
-    Assert.DoesNotThrow(fun () ->new CoreRegistrations(injector) |> ignore)
+    setup()
+    Assert.NotNull(new CoreRegistrations(injector))
 
 let toFactoryFunc x = (Func<ILambdaContainer,Object>(fun _ -> x :> Object))
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can RegisterFactory``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
     let factoryOutput = mock<ITestType>()
 
@@ -154,9 +164,10 @@ let ``CoreRegistrations Can RegisterFactory``() =
     assertRegistrationPerformed<ITestType> None
     assertRegisteredFactoryOutput factoryOutput
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Register Factory By Name``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
     let factoryOutput = mock<ITestType>()
     let name = "a name"
@@ -168,9 +179,10 @@ let ``CoreRegistrations Can Register Factory By Name``() =
     assertRegistrationPerformed<ITestType> (Some name)
     assertRegisteredFactoryOutput factoryOutput
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Register Mapping``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
 
     //Act
@@ -180,9 +192,10 @@ let ``CoreRegistrations Can Register Mapping``() =
     assertRegistrationPerformed<ITestType> None
     assertTypeRegistration<TestTypeImpl>()
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Register Mapping By Name``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
     let name = Guid.NewGuid().ToString()
 
@@ -193,34 +206,38 @@ let ``CoreRegistrations Can Register Mapping By Name``() =
     assertRegistrationPerformed<ITestType> (Some name)
     assertTypeRegistration<TestTypeImpl>()
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Not Register T to T``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.RegisterMapping typeof<TestTypeImpl> typeof<TestTypeImpl> |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Not Register T to T By Name``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
     let name = Guid.NewGuid().ToString()
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.RegisterMappingByName typeof<TestTypeImpl> typeof<TestTypeImpl> name |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Not Register T1 to T2 If T2 Is Not Implementation Of T1``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
 
     //Act + Assert
     Assert.Throws<InvalidRegistrationException>(fun () -> sut.RegisterMapping typeof<ITestType> typeof<TestClosedType> |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``CoreRegistrations Can Not Register T1 to T2 By Name If T2 Is Not Implementation Of T1``() =
     //Arrange
+    setup()
     let sut = CoreRegistrations(injector) :> ICoreRegistrations
 
     //Act + Assert

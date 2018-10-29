@@ -21,8 +21,8 @@
     <Compile Include="StackSetTest.fs" />
     <Compile Include="BuildPlannerTest.fs" />
     <Compile Include="TypeExplorerTest.fs" />
-    <!--<Compile Include="ConventionRegistrationsTest.fs" />
-    <Compile Include="RegistrationsTest.fs" />-->
+    <Compile Include="ConventionRegistrationsTest.fs" />
+    <Compile Include="RegistrationsTest.fs" />
   </ItemGroup>
 
   <ItemGroup>

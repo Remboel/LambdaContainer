@@ -12,6 +12,8 @@ type ITestDisposableInstanceFactory =
 
 type ITestType = interface end
 
+type ITestAction = interface end
+
 type TestTypeImpl() = 
     class
         interface ITestType
