@@ -2,14 +2,13 @@
 open Fasterflect
 open System
 open NSubstitute
-open NUnit.Framework
 open LambdaContainer.Core.FactoryContracts
 open LambdaContainer.Core.RepositoryConstruction
 open LambdaContainer.Core.Contracts
 open LambdaContainer.Core.Container
 open LambdaContainer.Core.TypeResolvers
 open LambdaContainer.Core.Tests.TestUtilities
-open FsUnit
+open Xunit
 
 type public TestType(injectedParam : string) =
     member __.GetInjectedParam() = injectedParam
@@ -57,6 +56,8 @@ let private createSutWithScoping scoping =
     new LambdaContainer(repository, typeResolver, scoping) :> ILambdaContainer
 
 let private createSut() =
+    repository <- mock<IFactoryConfigurationRepository>()
+    typeResolver <- mock<ITypeResolver>()
     createSutWithScoping echoRepoScopingConfig
 
 let private expectAsRegistrationResult<'a> sut (name : string option) (result : 'a option) =
@@ -100,16 +101,11 @@ let private expectFromTypeResolver<'a> (result : 'a option) =
     
     (typeResolver.Resolve (Arg.Any<System.Type -> Object>()) typeof<'a>).Returns(result) |> ignore
 
-[<SetUp>]
-let Setup() =
-    repository <- mock<IFactoryConfigurationRepository>()
-    typeResolver <- mock<ITypeResolver>()
-
-[<Test>]
+[<Fact>]
 let ``Can Construct``() =
-    Assert.DoesNotThrow(fun () -> createSut() |> ignore)
+    Assert.NotNull(createSut())
 
-[<Test>]
+[<Fact>]
 let ``Get Instance With Missing Registration Throws``() =
     //Arrange
     let sut = createSut()
@@ -118,16 +114,16 @@ let ``Get Instance With Missing Registration Throws``() =
     //Act - Assert
     Assert.Throws<MissingRegistrationException>(fun () ->  sut.GetInstanceOfType typeof<string> |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``GetInstanceOrNull With Missing Registration Returns Null``() =
     //Arrange
     let sut = createSut()
     None |> expectAsRegistrationResult<string> sut None
 
     //Act + Assert
-    sut.GetInstanceOfTypeOrNull typeof<string> |> should be Null
+    Assert.Null(sut.GetInstanceOfTypeOrNull typeof<string>)
 
-[<Test>]
+[<Fact>]
 let ``Exceptions During Factory Invocation Are Wrapped``() =
     //Arrange
     let sut = createSut()
@@ -141,7 +137,7 @@ let ``Exceptions During Factory Invocation Are Wrapped``() =
     //Act - Assert
     Assert.Throws<FactoryInvocationException>(fun () ->  sut.GetInstanceOfType theType |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Of Type``() =
     //Arrange
     let sut = createSut()
@@ -149,9 +145,9 @@ let ``Can Get Instance Of Type``() =
     Some expecedResult |> expectAsRegistrationResult<string> sut None
 
     //Act + Assert
-    sut.GetInstanceOfType typeof<string> |> should equal expecedResult
+    Assert.Equal(expecedResult :> Object, sut.GetInstanceOfType typeof<string>)
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Of Type By Name``() =
     //Arrange
     let sut = createSut()
@@ -159,9 +155,9 @@ let ``Can Get Instance Of Type By Name``() =
     Some expecedResult |> expectAsRegistrationResult<string> sut (Some("a name"))
 
     //Act + Assert
-    sut.GetInstanceOfTypeByName typeof<string> "a name" |> should equal expecedResult
+    Assert.Equal(expecedResult :> Object, sut.GetInstanceOfTypeByName typeof<string> "a name")
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Generic``() =
     //Arrange
     let sut = createSut()
@@ -169,9 +165,9 @@ let ``Can Get Instance Generic``() =
     Some expecedResult |> expectAsRegistrationResult<string> sut None
 
     //Act + Assert
-    sut.GetInstance<string>() |> should equal expecedResult
+    Assert.Equal(expecedResult, sut.GetInstance<string>())
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Or Null Generic``() =
     //Arrange
     let sut = createSut()
@@ -179,18 +175,18 @@ let ``Can Get Instance Or Null Generic``() =
     Some expecedResult |> expectAsRegistrationResult<string> sut None
 
     //Act + Assert
-    sut.GetInstanceOrNull<string>() |> should equal expecedResult
+    Assert.Equal(expecedResult, sut.GetInstanceOrNull<string>())
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Or Null Generic With Missing Registration Returns Null``() =
     //Arrange
     let sut = createSut()
     None |> expectAsRegistrationResult<string> sut None
 
     //Act + Assert
-    sut.GetInstanceOrNull<string>() |> should be Null
+    Assert.Null(sut.GetInstanceOrNull<string>())
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Generic By Name``() =
     //Arrange
     let sut = createSut()
@@ -198,9 +194,9 @@ let ``Can Get Instance Generic By Name``() =
     Some expecedResult |> expectAsRegistrationResult<string> sut (Some("a name"))
 
     //Act + Assert
-    sut.GetInstanceByName<string> "a name" |> should equal expecedResult
+    Assert.Equal(expecedResult, sut.GetInstanceByName<string> "a name")
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instances Generic``() =
     //Arrange
     let sut = createSut()
@@ -208,19 +204,20 @@ let ``Can Get Instances Generic``() =
     expectedResults |> Seq.ofList |> Option.Some |> expectAsManyRegistrationResult<string> sut
 
     //Act + Assert
-    sut.GetAllInstances<string>() |> should equal expectedResults
+    Assert.Equal(expectedResults, sut.GetAllInstances<string>())
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instances Of Type``() =
     //Arrange
     let sut = createSut()
     let expectedResults = ["Hello lambda container1" ; "Hello lambda container2"]
     expectedResults |> Seq.ofList |> Option.Some |> expectAsManyRegistrationResult<string> sut
+    let expectedObj = expectedResults |> List.map (fun x -> x :> Object) |> Seq.ofList
 
     //Act + Assert
-    sut.GetAllInstancesOfType typeof<string> |> should equal expectedResults
+    Assert.Equal<obj seq>(expectedObj, sut.GetAllInstancesOfType typeof<string>)
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Of Unregistered Type Through Type Resolver``() =
     //Arrange
     let sut = createSut()
@@ -228,9 +225,9 @@ let ``Can Get Instance Of Unregistered Type Through Type Resolver``() =
     Some(expecedResult) |> expectFromTypeResolver<string>
     
     //Act + Assert
-    sut.GetInstance<string>() |> should equal expecedResult
+    Assert.Equal(expecedResult, sut.GetInstance<string>())
 
-[<Test>]
+[<Fact>]
 let ``Fails If Unregistered And Resolved By Name``() =
     //Arrange
     let sut = createSut()
@@ -238,7 +235,7 @@ let ``Fails If Unregistered And Resolved By Name``() =
     //Act - Assert
     Assert.Throws<MissingRegistrationException>(fun () -> sut.GetInstanceByName<string>("the name") |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Fails If Unregistered And Type Resolver Returns None``() =
     //Arrange
     let sut = createSut()
@@ -247,7 +244,7 @@ let ``Fails If Unregistered And Type Resolver Returns None``() =
     //Act - Assert
     Assert.Throws<MissingRegistrationException>(fun () -> sut.GetInstance<string>() |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Can Inject Use Registered Factory Method For Specific Type``() =
     //Arrange
     let sut = createSut()
@@ -255,9 +252,9 @@ let ``Can Inject Use Registered Factory Method For Specific Type``() =
     Some theResult |> expectAsRegistrationResult<TestType3> sut None
 
     //Act + Assert
-    sut.GetInstance<TestType3>() |> should be (sameAs theResult)
+    Assert.Same(theResult,sut.GetInstance<TestType3>())
 
-[<Test>]
+[<Fact>]
 let ``Can Detect Cyclic Dependency``() =
     //Arrange
     let sut = createSut()
@@ -273,7 +270,7 @@ let ``Can Detect Cyclic Dependency``() =
     //Act - assert
     Assert.Throws<CyclicDependencyException>(fun () -> sut.GetInstance<TestType3>() |> ignore) |> ignore
 
-[<Test>]
+[<Fact>]
 let ``Can Dispose``() =
     //Arrange
     let sut = createSut()
@@ -284,7 +281,7 @@ let ``Can Dispose``() =
     //Assert
     repository.Received().Dispose()
 
-[<Test>]
+[<Fact>]
 let ``Can CreateSubScope``() =
     //Arrange
     let scopedRepository = mock<IFactoryConfigurationRepository>()
@@ -294,17 +291,17 @@ let ``Can CreateSubScope``() =
     let subScope = sut.CreateSubScope()
 
     //Assert
-    subScope |> should not' (equal null)
-    subScope.GetFieldValue("repository") :?> IFactoryConfigurationRepository |> should equal scopedRepository
+    Assert.NotNull(subScope)
+    Assert.Equal(scopedRepository, subScope.GetFieldValue("repository") :?> IFactoryConfigurationRepository)
 
-[<Test>]
+[<Fact>]
 let ``Can CreateSubScope With Additional Registrations``() =
     //Arrange
     let scopedRepository = mock<IFactoryConfigurationRepository>()
     let recFunc = Action<ILambdaContainerRegistrationsRecorder>(fun _ -> ())
     let cloneFunc = fun (r : IFactoryConfigurationRepository option) (rr : (ILambdaContainerRegistrationsRecorder -> unit) option) -> 
-                                Assert.That(r.Value, Is.EqualTo repository)
-                                Assert.That(rr.IsSome, Is.True)
+                                Assert.Equal(repository,r.Value)
+                                Assert.True(rr.IsSome)
                                 scopedRepository
     let scoping =
         {
@@ -318,5 +315,5 @@ let ``Can CreateSubScope With Additional Registrations``() =
     let subScope = sut.CreateSubScopeWith(recFunc)
 
     //Assert
-    subScope |> should not' (equal null)
-    subScope.GetFieldValue("repository") :?> IFactoryConfigurationRepository |> should equal scopedRepository
+    Assert.NotNull(subScope)
+    Assert.Equal(scopedRepository, subScope.GetFieldValue("repository") :?> IFactoryConfigurationRepository)
