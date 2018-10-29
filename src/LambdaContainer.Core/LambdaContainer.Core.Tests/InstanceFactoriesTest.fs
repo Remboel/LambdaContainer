@@ -1,13 +1,12 @@
 ﻿module LambdaContainer.Core.Tests.InstanceFactoriesTest
 open System
 open LambdaContainer.Core.Contracts
-open NUnit.Framework
 open LambdaContainer.Core.FactoryContracts
 open LambdaContainer.Core.InstanceFactories
 open LambdaContainer.Core.Tests.TestUtilities
 open LambdaContainer.Core.Tests.TestUtilities.Identity
-open FsUnit
 open System.Threading.Tasks
+open Xunit
 
 type DisposableTestObject() =
     let mutable isDisposed = false
@@ -56,9 +55,9 @@ let private constructSutWithRandomStringFactory(lifetime : OutputLifetime) =
 
 module InstanceCreationTests =
     let shouldAllBeEqual (inputList : obj list) =
-        inputList |> List.forall (fun x -> x.Equals(inputList.[0])) |> should be True
+         Assert.True(inputList |> List.forall (fun x -> x.Equals(inputList.[0])))
 
-    [<Test>]
+    [<Fact>]
     let ``Can Construct Instance Factory ForTransient Products``() =
         //Arrange
         let factory = (fun (_ : ILambdaContainer) -> "test" :> System.Object)
@@ -68,10 +67,10 @@ module InstanceCreationTests =
         let sut = new InstanceFactoryForTransientProducts(factory, identity) :> IInstanceFactory
 
         //Assert
-        sut.GetIdentity() |> should equal identity
-        sut.Invoke container |> should equal "test"
+        Assert.Equal(identity,sut.GetIdentity())
+        Assert.Equal("test" :> Object, sut.Invoke container)
 
-    [<Test>]
+    [<Fact>]
     let ``Can Get InstanceFactory For Transient Outputs``() =
         //Arrange
         let sut = constructSutWithRandomStringFactory(OutputLifetime.Transient)
@@ -81,9 +80,9 @@ module InstanceCreationTests =
         let res2 = sut.Invoke container
 
         //Assert
-        res1 |> should not' (equal res2)
+        Assert.NotEqual(res1, res2)
     
-    [<Test>]
+    [<Fact>]
     let ``Can Get InstanceFactory For Application Singletons``() =
         //Arrange
         let sut = constructSutWithRandomStringFactory(OutputLifetime.Singleton)
@@ -94,7 +93,7 @@ module InstanceCreationTests =
         //Assert
         results |> shouldAllBeEqual
 
-    [<Test>]
+    [<Fact>]
     let ``Can Get InstanceFactory For Thread Singletons``() =
         //Arrange
         let sut = constructSutWithRandomStringFactory(OutputLifetime.ThreadSingleton)
@@ -107,11 +106,11 @@ module InstanceCreationTests =
             |> Async.RunSynchronously
 
         //Assert
-        System.Linq.Enumerable.Intersect(first = results.[0], second = results.[1]) |> Seq.length |> should equal 0
+        Assert.Empty(System.Linq.Enumerable.Intersect(first = results.[0], second = results.[1]))
         results |> Array.iter (fun x -> x |> shouldAllBeEqual)
 
 module CloneTests =
-    let private doTestClone<'a when 'a :> IInstanceFactory> lifetime returnsSelf =
+    let private doTestClone<'a when 'a :> IInstanceFactory> lifetime =
         //Arrange
         let sut = constructSutWithRandomStringFactory(lifetime)
         let originalResult = sut.Invoke container
@@ -120,30 +119,29 @@ module CloneTests =
         let clone = sut.CreateSubScope()
 
         //Assert
-        clone |> should not' (be Null)
-        clone = sut |> should equal returnsSelf
-        clone.GetType() |> should equal typeof<'a>
-        clone.Invoke container |> should not' (equal originalResult)
+        Assert.NotNull(clone)
+        Assert.Equal(typeof<'a>, clone.GetType())
+        Assert.NotEqual(originalResult, clone.Invoke container)
 
-    [<Test>]
+    [<Fact>]
     let ``Can Clone TransientOutputFactory``() = 
-        doTestClone<InstanceFactoryForTransientProducts> OutputLifetime.Transient true
+        doTestClone<InstanceFactoryForTransientProducts> OutputLifetime.Transient
 
-    [<Test>]
+    [<Fact>]
     let ``Can Clone ThreadSingletonOutputFactory``() = 
-        doTestClone<InstanceFactoryThreadSingletonProducts> OutputLifetime.ThreadSingleton false
+        doTestClone<InstanceFactoryThreadSingletonProducts> OutputLifetime.ThreadSingleton
 
-    [<Test>]
+    [<Fact>]
     let ``Can Clone SingletonOutputFactory``() = 
-        doTestClone<InstanceFactorySingletonProducts> OutputLifetime.Singleton false
+        doTestClone<InstanceFactorySingletonProducts> OutputLifetime.Singleton
 
 module DisposalTests =
     let shouldHaveBeenDisposed (candidate : obj) =
-        (candidate :?> DisposableTestObject).IsDisposed() |> should be True
+         Assert.True((candidate :?> DisposableTestObject).IsDisposed())
 
     let disposableTestObjectFactory = (fun _ -> new DisposableTestObject() :> Object)
 
-    [<Test>]
+    [<Fact>]
     let ``Can Dispose ThreadSingletonOutputFactory``() =
         //Arrange
         let id = simpleIdentity<DisposableTestObject>()
@@ -157,7 +155,7 @@ module DisposalTests =
         //Assert
         createdResults |> Array.iter shouldHaveBeenDisposed
 
-    [<Test>]
+    [<Fact>]
     let ``Can Dispose SingletonOutputFactory``() =
         //Arrange
         let id = simpleIdentity<DisposableTestObject>()
