@@ -12,8 +12,8 @@
     <Compile Include="FactoryConfigurationRepositoryTest.fs" />
     <Compile Include="DynamicTypeResolverTests.fs" />
     <Compile Include="LambdaContainerTest.fs" />
-    <!--<Compile Include="LambdaContainerIntegrationTest.fs" />
-    <Compile Include="RegistryDiscoveryTest.fs" />
+    <Compile Include="LambdaContainerIntegrationTest.fs" />
+    <!--<Compile Include="RegistryDiscoveryTest.fs" />
     <Compile Include="InstanceFactoriesTest.fs" />
     <Compile Include="ApplicationScopeTest.fs" />
     <Compile Include="SubScopeTest.fs" />

@@ -1,12 +1,11 @@
 ﻿module LambdaContainer.Core.Tests.LambdaContainerIntegrationTest
 open System
-open NUnit.Framework
 open LambdaContainer.Core.Contracts
 open LambdaContainer.Core.Container
 open LambdaContainer.Core.Setup
 open System.Threading
 open LambdaContainer.Core.BootTests
-open FsUnit
+open Xunit
 
 let createBootstrapper() = LambdaContainerBootstrapper
                             .Create()
@@ -16,29 +15,29 @@ let createBootstrapper() = LambdaContainerBootstrapper
 let createSut() =
     createBootstrapper().Run()
 
-[<Test>]
+[<Fact>]
 let ``Can Build Lambda Container``() =
-    Assert.DoesNotThrow(fun () -> createSut() |> ignore)
+    Assert.NotNull(createSut())
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Provided By FsharpFactoryProvider Client``() =
     //Arrange
     let container = createSut()
     let name = typeof<Provider1.Tests.Provider1>.FullName
 
     //Act + Assert
-    container.GetInstanceByName<string>(name) |> should equal name
+    Assert.Equal(name,container.GetInstanceByName<string>(name))
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Provided By FactoryProvider Client``() =
     //Arrange
     let container = createSut()
     let name = typeof<Provider2.Tests.Provider1>.FullName
 
     //Act + Assert
-    container.GetInstanceByName<string>(name) |> should equal name
+    Assert.Equal(name,container.GetInstanceByName<string>(name))
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Provided By TypeRegistration Client``() =
     //Arrange
     let container = createSut()
@@ -47,9 +46,9 @@ let ``Can Get Instance Provided By TypeRegistration Client``() =
     let res = container.GetInstance<Provider2.Tests.IAclass>()
 
     //Assert
-    res.ChildAutoInjected |> should not' (be Null)
+    Assert.NotNull(res.ChildAutoInjected)
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Provided By TypeRegistration As Application Singleton Client``() =
     //Arrange
     let container = createSut()
@@ -59,9 +58,9 @@ let ``Can Get Instance Provided By TypeRegistration As Application Singleton Cli
     let res2 = Tasks.Task.Run(fun () -> container.GetInstance<Provider2.Tests.IAchild2>()).GetAwaiter().GetResult()
 
     //Assert
-    res1 |> should be (sameAs res2)
+    Assert.Same(res1,res2)
 
-[<Test>]
+[<Fact>]
 let ``Can Get Instance Provided By TypeRegistration Client And Inject All Of A Type In Ctor``() =
     //Arrange
     let container = createSut()
@@ -70,10 +69,10 @@ let ``Can Get Instance Provided By TypeRegistration Client And Inject All Of A T
     let res = container.GetInstance<Provider2.Tests.ContructorInjectAllOfType>()
 
     //Assert
-    res.Variants |> should not' (be Null)
-    res.Variants.Length |> should equal 2
+    Assert.NotNull(res.Variants)
+    Assert.Equal(2,res.Variants.Length)
 
-[<Test>]
+[<Fact>]
 let ``IsTypeRegistered Returns True``() =
     //Arrange
     let container = createSut()
@@ -83,9 +82,9 @@ let ``IsTypeRegistered Returns True``() =
     let res2 = container.IsTypeRegistered typeof<Provider2.Tests.IAchild2>
 
     //Assert
-    [res1; res2] |> should equal [true; true]
+    Assert.Equal((true,true),(res1,res2))
 
-[<Test>]
+[<Fact>]
 let ``IsTypeRegistered Returns False``() =
     //Arrange
     let container = createSut()
@@ -95,9 +94,9 @@ let ``IsTypeRegistered Returns False``() =
     let res2 = container.IsTypeRegistered typeof<Provider2.Tests.AChild>
 
     //Assert
-    [res1; res2] |> should equal [false; false]
+    Assert.Equal((false,false),(res1,res2))
 
-[<Test>]
+[<Fact>]
 let ``IsTypeRegisteredByName Returns True``() =
     //Arrange
     let name = typeof<Provider1.Tests.Provider1>.FullName
@@ -108,9 +107,9 @@ let ``IsTypeRegisteredByName Returns True``() =
     let res2 = container.IsTypeRegisteredByName typeof<string> name
 
     //Assert
-    [res1; res2] |> should equal [true; true]
+    Assert.Equal((true,true),(res1,res2))
 
-[<Test>]
+[<Fact>]
 let ``IsTypeRegisteredByName Returns False``() =
     //Arrange
     let container = createSut()
@@ -120,17 +119,17 @@ let ``IsTypeRegisteredByName Returns False``() =
     let res2 = container.IsTypeRegisteredByName typeof<string> (Guid.NewGuid().ToString())
 
     //Assert
-    [res1; res2] |> should equal [false; false]
+    Assert.Equal((false,false),(res1,res2))
 
-[<Test>]
+[<Fact>]
 let ``Can Resolve The Container``() =
     //Arrange
     let container = createSut()
     
     //Act + Assert
-    container.GetInstance<ILambdaContainer>() |> should be (sameAs container)
+    Assert.Same(container,container.GetInstance<ILambdaContainer>())
 
-[<Test>]
+[<Fact>]
 let ``Can Perform Property Injection``() =
     //Arrange
     let container = createSut()
@@ -139,10 +138,10 @@ let ``Can Perform Property Injection``() =
     let res = container.GetInstance<Provider2.Tests.PropertyInjectionTestType>()
 
     //Assert
-    res.InjectedChild1 |> should not' (be Null)
-    res.InjectedChild2 |> should not' (be Null)
+    Assert.NotNull(res.InjectedChild1)
+    Assert.NotNull(res.InjectedChild2)
 
-[<Test>]
+[<Fact>]
 let ``Can Perform Method Injection``() =
     //Arrange
     let container = createSut()
@@ -151,11 +150,11 @@ let ``Can Perform Method Injection``() =
     let res = container.GetInstance<Provider2.Tests.MethodInjectionTestType>()
 
     //Assert
-    res.GetInjectedTypeThatHadPropertyInjection() |> should not' (be Null)
-    res.GetInjectedTypeThatHadPropertyInjection().InjectedChild1 |> should not' (be Null)
-    res.GetInjectedTypeThatHadPropertyInjection().InjectedChild2 |> should not' (be Null)
+    Assert.NotNull(res.GetInjectedTypeThatHadPropertyInjection())
+    Assert.NotNull(res.GetInjectedTypeThatHadPropertyInjection().InjectedChild1)
+    Assert.NotNull(res.GetInjectedTypeThatHadPropertyInjection().InjectedChild2)
 
-[<Test>]
+[<Fact>]
 let ``Can Configure Container With Registration Commands For Type Mappings``() =
     //Arrange
     let bs = createBootstrapper()
@@ -173,11 +172,11 @@ let ``Can Configure Container With Registration Commands For Type Mappings``() =
     let res2 = container.GetInstance<Provider2.Tests.IAclass>()
 
     //Assert
-    res1 |> should not' (be Null)
-    res2 |> should not' (be Null)
-    [res1.GetType() ; res2.GetType()] |> should equal [typeof<Provider2.Tests.AChild> ; typeof<Provider2.Tests.AClass>]
+    Assert.NotNull(res1)
+    Assert.NotNull(res2)
+    Assert.Equal((typeof<Provider2.Tests.AChild>, typeof<Provider2.Tests.AClass>),(res1.GetType(), res2.GetType()))
 
-[<Test>]
+[<Fact>]
 let ``Can Configure Container With Registration Commands For Factory Mappings``() =
     //Arrange
     let bs = createBootstrapper()
@@ -192,9 +191,9 @@ let ``Can Configure Container With Registration Commands For Factory Mappings``(
     let res = container.GetInstanceByName<string>("theNAme")
 
     //Assert
-    res |> should equal "Hello"
+    Assert.Equal("Hello",res)
 
-[<Test>]
+[<Fact>]
 let ``Can Override Registration In Subscope``() =
     //Arrange
     let name = Guid.NewGuid().ToString()
@@ -217,10 +216,10 @@ let ``Can Override Registration In Subscope``() =
     let scoped = subscopedContainer.GetInstanceByName<string>(name)
 
     //Assert
-    original |> should equal originalValue
-    scoped |> should equal scopedValue
+    Assert.Equal(originalValue, original)
+    Assert.Equal(scopedValue, scoped)
 
-[<Test>]
+[<Fact>]
 let ``GetInstance In Subscope When Not Overridden Resolves In Original Scope``() =
     //Arrange
     let nameOfNotOverridden = Guid.NewGuid().ToString()
@@ -238,9 +237,9 @@ let ``GetInstance In Subscope When Not Overridden Resolves In Original Scope``()
     let notOverridden = subscopedContainer.GetInstanceByName<string>(nameOfNotOverridden)
 
     //Assert
-    notOverridden |> should equal valueOfNotOverridden
+    Assert.Equal(valueOfNotOverridden, notOverridden)
 
-[<Test>]
+[<Fact>]
 let ``Can Override Registration In CustomizedResolutionScope``() =
     //Arrange
     let name = Guid.NewGuid().ToString()
@@ -262,5 +261,5 @@ let ``Can Override Registration In CustomizedResolutionScope``() =
     let scoped = customizedResolution.GetInstanceByName<string>(name)
 
     //Assert
-    original |> should equal originalValue
-    scoped |> should equal scopedValue
+    Assert.Equal(originalValue,original)
+    Assert.Equal(scopedValue,scoped)
