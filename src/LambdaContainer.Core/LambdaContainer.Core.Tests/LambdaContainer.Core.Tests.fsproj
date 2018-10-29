@@ -18,9 +18,9 @@
     <Compile Include="ApplicationScopeTest.fs" />
     <Compile Include="SubScopeTest.fs" />
     <Compile Include="SharedScopeTest.fs" />
-    <!--<Compile Include="StackSetTest.fs" />
+    <Compile Include="StackSetTest.fs" />
     <Compile Include="BuildPlannerTest.fs" />
-    <Compile Include="TypeExplorerTest.fs" />
+    <!--<Compile Include="TypeExplorerTest.fs" />
     <Compile Include="ConventionRegistrationsTest.fs" />
     <Compile Include="RegistrationsTest.fs" />-->
   </ItemGroup>
