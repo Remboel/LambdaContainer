@@ -1,11 +1,10 @@
 ﻿module LambdaContainer.Core.Tests.DynamicTypeResolverTests
 open System
 open NSubstitute
-open NUnit.Framework
 open LambdaContainer.Core.Contracts
 open LambdaContainer.Core.TypeResolvers
 open LambdaContainer.Core.Tests.TestUtilities
-open FsUnit
+open Xunit
 
 [<AllowNullLiteral>]
 type public TestType(injectedParam : string) =
@@ -95,9 +94,9 @@ let private createSut() =
 let private resolveFrom<'a when 'a:null> (sut : ITypeResolver) paramBuilder =
     ((sut.Resolve paramBuilder typeof<'a>) |> Option.get :?> 'a) |> Option.ofObj
 
-[<Test>]
+[<Fact>]
 let ``Can Construct``() =
-    Assert.DoesNotThrow(fun () -> createSut() |> ignore)
+    Assert.NotNull(createSut())
 
 module ConstructorInjectionTests =
     let createSimpleParameterBuilder<'a> (result : 'a) =
@@ -106,7 +105,7 @@ module ConstructorInjectionTests =
         (pb injectedType).Returns(result) |> ignore
         pb
 
-    [<Test>]
+    [<Fact>]
     let ``Can Get Instance Of Specific Type And Dependency Inject Ctor Args``() =
         //Arrange
         let sut = createSut()
@@ -115,9 +114,9 @@ module ConstructorInjectionTests =
         let resolvedInstance = createSimpleParameterBuilder "test" |> resolveFrom<TestType> sut
 
         //Assert
-        resolvedInstance|> Option.map (fun x -> x.GetInjectedParam()) |> should equal (Some "test")
+        Assert.Equal(Some "test", resolvedInstance|> Option.map (fun x -> x.GetInjectedParam()))
 
-    [<Test>]
+    [<Fact>]
     let ``Can Get Instance Of Specific Type Always Selects Ctor With Most Args If No Marked Exists``() =
         //Arrange
         let sut = createSut()
@@ -126,9 +125,9 @@ module ConstructorInjectionTests =
         let resolvedInstance = createSimpleParameterBuilder "test" |> resolveFrom<TestType2> sut
 
         //Assert
-        resolvedInstance|> Option.map (fun x -> x.GetInjectedParam()) |> should equal (Some "test")
+        Assert.Equal(Some "test", resolvedInstance|> Option.map (fun x -> x.GetInjectedParam()))
 
-    [<Test>]
+    [<Fact>]
     let ``Can Get Instance Of Specific Type Always Skips Ctor With Primitive Args``() =
         //Arrange
         let sut = createSut()
@@ -137,9 +136,9 @@ module ConstructorInjectionTests =
         let resolvedInstance = createSimpleParameterBuilder "test" |> resolveFrom<TestType4> sut
 
         //Assert
-        resolvedInstance |> Option.map (fun x -> x.GetInjectedParam()) |> should equal (Some "test")
+        Assert.Equal(Some "test", resolvedInstance|> Option.map (fun x -> x.GetInjectedParam()))
 
-    [<Test>]
+    [<Fact>]
     let ``Can Get Instance Of Specific Type Always Selects Marked Ctor``() =
         //Arrange
         let sut = createSut()
@@ -148,8 +147,8 @@ module ConstructorInjectionTests =
         let resolvedInstance = createSimpleParameterBuilder "" |> resolveFrom<TestType3> sut
 
         //Assert
-        resolvedInstance.IsSome |> should be True
-        resolvedInstance.Value.WasCreatedByInjectionCtor() |> should be True
+        Assert.True(resolvedInstance.IsSome)
+        Assert.True(resolvedInstance.Value.WasCreatedByInjectionCtor())
 
 module MethodInjectionTests =
 
@@ -164,7 +163,7 @@ module MethodInjectionTests =
             else 
                 failwith "Unexpected dependency type")
 
-    [<Test>]
+    [<Fact>]
     let ``Can Perform Method Injection``() =
         //Arrange
         let sut = createSut()
@@ -173,11 +172,11 @@ module MethodInjectionTests =
         let resolvedInstance = parameterBuilder |> resolveFrom<MethodInjectionTestType> sut
 
         //Assert
-        resolvedInstance.IsSome |> should be True
-        resolvedInstance.Value.GetInjectedParams() |> fst |> should not' (be Null)
-        resolvedInstance.Value.GetInjectedParams() |> snd |> should equal "test"
+        Assert.True(resolvedInstance.IsSome)
+        Assert.NotEqual(null, resolvedInstance.Value.GetInjectedParams() |> fst)
+        Assert.Equal("test", resolvedInstance.Value.GetInjectedParams() |> snd)
 
-    [<Test>]
+    [<Fact>]
     let ``Does Not Method Inject Unless Marked``() =
         //Arrange
         let sut = createSut()
@@ -186,8 +185,8 @@ module MethodInjectionTests =
         let resolvedInstance = parameterBuilder |> resolveFrom<MethodInjectionTestType> sut
 
         //Assert
-        resolvedInstance.IsSome |> should be True
-        resolvedInstance.Value.ShouldNotBeInjected() |> should be Null
+        Assert.True(resolvedInstance.IsSome)
+        Assert.Null(resolvedInstance.Value.ShouldNotBeInjected())
 
 module PropertyInjectionTests =
     let parameterBuilder =
@@ -198,7 +197,7 @@ module PropertyInjectionTests =
             else 
                 failwith "Unexpected dependency type")
 
-    [<Test>]
+    [<Fact>]
     let ``Can Perform Property Injection``() =
         //Arrange
         let sut = createSut()
@@ -207,11 +206,11 @@ module PropertyInjectionTests =
         let resolvedInstance = parameterBuilder |> resolveFrom<PropertyInjectionTestType> sut
         
         //Assert
-        resolvedInstance.IsSome |> should be True
-        resolvedInstance.Value.Injected |> should not' (be Null)
+        Assert.True(resolvedInstance.IsSome)
+        Assert.NotNull(resolvedInstance.Value.Injected)
 
 
-    [<Test>]
+    [<Fact>]
     let ``Does Not Property Inject Unless Marked``() =
         //Arrange
         let sut = createSut()
@@ -220,5 +219,5 @@ module PropertyInjectionTests =
         let resolvedInstance = parameterBuilder |> resolveFrom<PropertyInjectionTestType> sut
 
         //Assert
-        resolvedInstance.IsSome |> should be True
-        resolvedInstance.Value.ShouldNotBeInjected |> should be Null
+        Assert.True(resolvedInstance.IsSome)
+        Assert.Null(resolvedInstance.Value.ShouldNotBeInjected)

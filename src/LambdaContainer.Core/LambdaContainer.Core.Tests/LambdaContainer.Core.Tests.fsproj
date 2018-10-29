@@ -10,8 +10,8 @@
     <Compile Include="FactoryIdentityTest.fs" />
     <Compile Include="ConcurrentFactoryConfigurationRepositoryBuilder.fs" />
     <Compile Include="FactoryConfigurationRepositoryTest.fs" />
-    <!--<Compile Include="DynamicTypeResolverTests.fs" />
-    <Compile Include="LambdaContainerTest.fs" />
+    <Compile Include="DynamicTypeResolverTests.fs" />
+    <!--<Compile Include="LambdaContainerTest.fs" />
     <Compile Include="LambdaContainerIntegrationTest.fs" />
     <Compile Include="RegistryDiscoveryTest.fs" />
     <Compile Include="InstanceFactoriesTest.fs" />
